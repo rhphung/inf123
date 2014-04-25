@@ -6,10 +6,16 @@ from time import sleep
 
 myname = raw_input('What is your name? ')
 
+done = False
+
 class Client(Handler):
     
     def on_close(self):
         print '**** Disconnected from server ****'
+        #self.close_when_done()
+        #global done
+        #done = True
+        #sys.exit()
         
     def on_msg(self, msg):
         print msg
@@ -28,8 +34,16 @@ thread = Thread(target=periodic_poll)
 thread.daemon = True  # die when the main thread dies 
 thread.start()
 
-while 1:
-    mytxt = sys.stdin.readline().rstrip()
-    client.do_send({'msg_type' : 'chat',
+
+while not done:
+    try:
+        mytxt = sys.stdin.readline().rstrip()
+        client.do_send({'msg_type' : 'chat',
                     'user_name' : myname, 
                     'txt' : mytxt})
+        if mytxt == 'quit':
+            client.on_close()
+            done = True
+    except (KeyboardInterrupt, SystemExit):
+        client.on_close()
+        sys.exit()

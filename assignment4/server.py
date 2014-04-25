@@ -38,6 +38,8 @@ server = Listener(port, MyHandler)
 
 print("Chat server started on port: " + str(port))
 while 1:
-    poll(timeout=0.05) # in seconds
-
+    try:
+        poll(timeout=0.05) # in seconds
+    except (KeyboardInterrupt, SystemExit):
+        break
 
