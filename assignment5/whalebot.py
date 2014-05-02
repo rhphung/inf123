@@ -7,20 +7,29 @@ from common import Model
 class Controller():
     def __init__(self, m):
         self.m = m
+        self.rand = randint(0,3)
+        self.p = self.m.pellets[self.rand]
         
     def handler(self):
         print 'Here you go'
+        
     def poll(self):
-        d = randint(1,4)
-        if d == 1:
-            self.m.do_cmd('up')
-        elif d == 2:
-            self.m.do_cmd('down')
-        elif d == 3:
-            self.m.do_cmd('right')
-        elif d == 4:
-            self.m.do_cmd('left')
+        x = self.p[0]
+        y = self.p[1]
 
+        if y < self.m.mybox[1]:
+            self.m.do_cmd('up')
+        elif y > self.m.mybox[1]:
+            self.m.do_cmd('down')
+        elif x > self.m.mybox[0]:
+            self.m.do_cmd('right')
+        elif x < self.m.mybox[0]:
+            self.m.do_cmd('left')
+            
+        if self.m.pellets[self.rand][0] != x or self.m.pellets[self.rand][1] != y:
+            self.rand = randint(0,3)
+            self.p = self.m.pellets[self.rand]
+        
 ################### VIEW #############################
 
 import pygame
@@ -40,10 +49,10 @@ class View():
         b = self.m.mybox
         myrect = pygame.Rect(b[0], b[1], b[2], b[3])
         
-        #screen.fill((0, 0, 64))  # dark blue
-        #pygame.draw.rect(screen, (0, 191, 255), myrect)  # Deep Sky Blue
-        #[pygame.draw.rect(screen, (255, 192, 203), p) for p in pellets]  # pink
-        #[pygame.draw.rect(screen, (0, 191, 255), b) for b in borders]  # red
+        screen.fill((0, 0, 64))  # dark blue
+        pygame.draw.rect(screen, (0, 191, 255), myrect)  # Deep Sky Blue
+        [pygame.draw.rect(screen, (255, 192, 203), p) for p in pellets]  # pink
+        [pygame.draw.rect(screen, (0, 191, 255), b) for b in borders]  # red
         
         self.tick+=1
         if self.tick == 50:
